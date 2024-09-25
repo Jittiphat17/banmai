@@ -50,12 +50,17 @@ Partial Class frmIncome
         Me.lblTotalAmount = New System.Windows.Forms.Label()
         Me.Guna2Panel1 = New Guna.UI2.WinForms.Guna2Panel()
         Me.Guna2ControlBox2 = New Guna.UI2.WinForms.Guna2ControlBox()
+        Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.lblBalanceAmount = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
         CType(Me.dgvPaymentDetails, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Guna2GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         CType(Me.dgvIncomeDetails, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.Guna2Panel1.SuspendLayout()
+        Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'Guna2Elipse1
@@ -249,7 +254,7 @@ Partial Class frmIncome
         Me.btnDelete.BackColor = System.Drawing.SystemColors.Highlight
         Me.btnDelete.Font = New System.Drawing.Font("TH SarabunPSK", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnDelete.ForeColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnDelete.Location = New System.Drawing.Point(463, 523)
+        Me.btnDelete.Location = New System.Drawing.Point(168, 519)
         Me.btnDelete.Name = "btnDelete"
         Me.btnDelete.Size = New System.Drawing.Size(150, 75)
         Me.btnDelete.TabIndex = 22
@@ -261,7 +266,7 @@ Partial Class frmIncome
         Me.btnClear.BackColor = System.Drawing.SystemColors.Highlight
         Me.btnClear.Font = New System.Drawing.Font("TH SarabunPSK", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnClear.ForeColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnClear.Location = New System.Drawing.Point(779, 523)
+        Me.btnClear.Location = New System.Drawing.Point(484, 519)
         Me.btnClear.Name = "btnClear"
         Me.btnClear.Size = New System.Drawing.Size(150, 75)
         Me.btnClear.TabIndex = 19
@@ -273,7 +278,7 @@ Partial Class frmIncome
         Me.btnCalculate.BackColor = System.Drawing.SystemColors.Highlight
         Me.btnCalculate.Font = New System.Drawing.Font("TH SarabunPSK", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnCalculate.ForeColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnCalculate.Location = New System.Drawing.Point(623, 523)
+        Me.btnCalculate.Location = New System.Drawing.Point(328, 519)
         Me.btnCalculate.Name = "btnCalculate"
         Me.btnCalculate.Size = New System.Drawing.Size(150, 75)
         Me.btnCalculate.TabIndex = 20
@@ -285,7 +290,7 @@ Partial Class frmIncome
         Me.btnSave.BackColor = System.Drawing.SystemColors.Highlight
         Me.btnSave.Font = New System.Drawing.Font("TH SarabunPSK", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnSave.ForeColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnSave.Location = New System.Drawing.Point(307, 523)
+        Me.btnSave.Location = New System.Drawing.Point(12, 519)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(150, 75)
         Me.btnSave.TabIndex = 21
@@ -342,6 +347,46 @@ Partial Class frmIncome
         Me.Guna2ControlBox2.Size = New System.Drawing.Size(38, 29)
         Me.Guna2ControlBox2.TabIndex = 15
         '
+        'Panel2
+        '
+        Me.Panel2.BackColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.Panel2.Controls.Add(Me.lblBalanceAmount)
+        Me.Panel2.Location = New System.Drawing.Point(1063, 555)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(160, 45)
+        Me.Panel2.TabIndex = 23
+        '
+        'lblBalanceAmount
+        '
+        Me.lblBalanceAmount.AutoSize = True
+        Me.lblBalanceAmount.Font = New System.Drawing.Font("TH SarabunPSK", 26.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblBalanceAmount.ForeColor = System.Drawing.Color.Red
+        Me.lblBalanceAmount.Location = New System.Drawing.Point(19, 6)
+        Me.lblBalanceAmount.Name = "lblBalanceAmount"
+        Me.lblBalanceAmount.Size = New System.Drawing.Size(62, 39)
+        Me.lblBalanceAmount.TabIndex = 10
+        Me.lblBalanceAmount.Text = "0.00"
+        '
+        'Label8
+        '
+        Me.Label8.AutoSize = True
+        Me.Label8.Font = New System.Drawing.Font("FC Minimal", 20.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label8.Location = New System.Drawing.Point(1009, 507)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(48, 27)
+        Me.Label8.TabIndex = 0
+        Me.Label8.Text = "รวม"
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Font = New System.Drawing.Font("FC Minimal", 20.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label9.Location = New System.Drawing.Point(978, 564)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(79, 27)
+        Me.Label9.TabIndex = 0
+        Me.Label9.Text = "คงเหลือ"
+        '
         'frmIncome
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -349,6 +394,8 @@ Partial Class frmIncome
         Me.ClientSize = New System.Drawing.Size(1235, 606)
         Me.Controls.Add(Me.Guna2Panel1)
         Me.Controls.Add(Me.dgvPaymentDetails)
+        Me.Controls.Add(Me.Label9)
+        Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.Guna2GroupBox2)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.txtInid)
@@ -357,6 +404,7 @@ Partial Class frmIncome
         Me.Controls.Add(Me.btnCalculate)
         Me.Controls.Add(Me.btnSave)
         Me.Controls.Add(Me.dgvIncomeDetails)
+        Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Name = "frmIncome"
@@ -371,6 +419,8 @@ Partial Class frmIncome
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Guna2Panel1.ResumeLayout(False)
+        Me.Panel2.ResumeLayout(False)
+        Me.Panel2.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -403,4 +453,8 @@ Partial Class frmIncome
     Friend WithEvents lblTotalAmount As Label
     Friend WithEvents Guna2Panel1 As Guna.UI2.WinForms.Guna2Panel
     Friend WithEvents Guna2ControlBox2 As Guna.UI2.WinForms.Guna2ControlBox
+    Friend WithEvents Label9 As Label
+    Friend WithEvents Label8 As Label
+    Friend WithEvents Panel2 As Panel
+    Friend WithEvents lblBalanceAmount As Label
 End Class

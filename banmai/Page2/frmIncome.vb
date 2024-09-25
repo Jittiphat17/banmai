@@ -83,9 +83,6 @@ Public Class frmIncome
         colPaymentType.HeaderText = "ประเภทของค่างวด"
         colPaymentType.Name = "PaymentType"
         colPaymentType.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-        colPaymentType.DataPropertyName = "PaymentType" ' เพิ่มบรรทัดนี้
-        ' เพิ่มรายการที่ถูกต้องให้กับ ComboBox
-        colPaymentType.Items.AddRange(New String() {"เงินต้น", "ดอกเบี้ย", "ค่าปรับ", "ค่างวดสินเชื่อ", "ดอกเบี้ยค้างชำระ", "ค่าธรรมเนียมล่าช้า", "อื่น ๆ"})
         dgvPaymentDetails.Columns.Add(colPaymentType)
 
         ' เพิ่มคอลัมน์สำหรับจำนวนเงินค่างวด
@@ -104,6 +101,13 @@ Public Class frmIncome
         colPaymentContractNumber.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
         dgvPaymentDetails.Columns.Add(colPaymentContractNumber)
 
+        ' เพิ่มคอลัมน์ ComboBox สำหรับงวดที่
+        Dim colPaymentPeriod As New DataGridViewComboBoxColumn()
+        colPaymentPeriod.HeaderText = "งวดที่"
+        colPaymentPeriod.Name = "PaymentPeriod"
+        colPaymentPeriod.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+        dgvPaymentDetails.Columns.Add(colPaymentPeriod)
+
         ' เพิ่มคอลัมน์ปุ่มลบรายการ
         Dim colDeletePaymentButton As New DataGridViewButtonColumn()
         colDeletePaymentButton.HeaderText = "ลบรายการ"
@@ -118,6 +122,7 @@ Public Class frmIncome
         dgvPaymentDetails.RowTemplate.Height = 30
         dgvPaymentDetails.AllowUserToAddRows = True
     End Sub
+
 
     Private Sub LoadPaymentTypes()
         Try
@@ -260,7 +265,7 @@ Public Class frmIncome
     Private Sub CalculateTotalAmount()
         Dim totalAmount As Decimal = 0
 
-        ' คำนวณผลรวมของจำนวนเงินใน dgvIncomeDetails
+        ' Calculate the total amount from dgvIncomeDetails
         For Each row As DataGridViewRow In dgvIncomeDetails.Rows
             If Not row.IsNewRow Then
                 Dim amount As Decimal
@@ -270,7 +275,7 @@ Public Class frmIncome
             End If
         Next
 
-        ' คำนวณผลรวมของจำนวนเงินใน dgvPaymentDetails
+        ' Calculate the total amount from dgvPaymentDetails
         For Each row As DataGridViewRow In dgvPaymentDetails.Rows
             If Not row.IsNewRow Then
                 Dim amount As Decimal
@@ -280,9 +285,11 @@ Public Class frmIncome
             End If
         Next
 
-        ' แสดงผลรวมใน Label
+        ' Display the total amount in lblTotalAmount
         lblTotalAmount.Text = totalAmount.ToString("N2")
     End Sub
+
+
 
     ' ฟังก์ชันสำหรับบันทึกข้อมูลและทำการหักยอดเมื่อค่าของ lblTotalAmount และ txtAmount เท่ากัน
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
@@ -330,7 +337,7 @@ Public Class frmIncome
                     Dim paymentType As String = row.Cells("PaymentType").Value.ToString()
                     Dim amount As Decimal = CDec(row.Cells("PaymentAmount").Value)
 
-                    ' หักยอดเงินและอัปเดตสถานะการชำระเงิน
+                    ' หักยอดเงินและอัปเดตสถานะการชำระเงิน พร้อมอัปเดตฟิลด์ payment_balance
                     If DeductBalance(contractNumber, amount) Then
                         UpdatePaymentStatus(contractNumber)
                     End If
@@ -343,6 +350,7 @@ Public Class frmIncome
             MessageBox.Show("เกิดข้อผิดพลาดในการบันทึกข้อมูล: " & ex.Message, "ข้อผิดพลาด", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
 
     Private Sub SaveData()
         Try
@@ -466,6 +474,13 @@ Public Class frmIncome
                 cmdUpdateContract.Parameters.AddWithValue("@contractNumber", contractNumber)
                 cmdUpdateContract.ExecuteNonQuery()
 
+                ' อัปเดตฟิลด์ payment_balance ในตาราง Payment
+                Dim queryUpdatePayment As String = "UPDATE Payment SET payment_balance = @newAmount WHERE con_id = @contractNumber"
+                Dim cmdUpdatePayment As New OleDbCommand(queryUpdatePayment, Conn)
+                cmdUpdatePayment.Parameters.AddWithValue("@newAmount", newAmount)
+                cmdUpdatePayment.Parameters.AddWithValue("@contractNumber", contractNumber)
+                cmdUpdatePayment.ExecuteNonQuery()
+
                 Return True
             End Using
         Catch ex As Exception
@@ -473,6 +488,7 @@ Public Class frmIncome
             Return False
         End Try
     End Function
+
 
     Private Sub UpdatePaymentStatus(contractNumber As String)
         Try
@@ -666,28 +682,30 @@ Public Class frmIncome
     End Sub
 
     ' ฟังก์ชันสำหรับดึงข้อมูลเงินต้นและดอกเบี้ยตาม PaymentContractNumber
-    Private Function GetPaymentData(contractNumber As String) As List(Of (Principal As Decimal, Interest As Decimal))
-        Dim payments As New List(Of (Principal As Decimal, Interest As Decimal))
+    Private Function GetPaymentData(contractNumber As String) As List(Of (Period As Integer, Principal As Decimal, Interest As Decimal))
+        Dim payments As New List(Of (Period As Integer, Principal As Decimal, Interest As Decimal))
 
         Using Conn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & Application.StartupPath & "\db_banmai1.accdb")
             Conn.Open()
 
             ' ดึงข้อมูลงวดการชำระทั้งหมดที่ยังไม่ได้ชำระเรียงตามลำดับงวด
-            Dim query As String = "SELECT payment_prin, payment_interest FROM Payment WHERE con_id = @contractNumber AND status_id = 1 ORDER BY payment_period ASC"
+            Dim query As String = "SELECT payment_period, payment_prin, payment_interest FROM Payment WHERE con_id = @contractNumber AND status_id = 1 ORDER BY payment_period ASC"
             Dim cmd As New OleDbCommand(query, Conn)
             cmd.Parameters.AddWithValue("@contractNumber", contractNumber)
             Dim reader As OleDbDataReader = cmd.ExecuteReader()
 
             ' เก็บข้อมูลแต่ละงวดที่ดึงมาในรายการ
             While reader.Read()
+                Dim period As Integer = Convert.ToInt32(reader("payment_period"))
                 Dim principalAmount As Decimal = Convert.ToDecimal(reader("payment_prin"))
                 Dim interestAmount As Decimal = Convert.ToDecimal(reader("payment_interest"))
-                payments.Add((Principal:=principalAmount, Interest:=interestAmount))
+                payments.Add((Period:=period, Principal:=principalAmount, Interest:=interestAmount))
             End While
         End Using
 
         Return payments
     End Function
+
 
     Private Sub dgvPaymentDetails_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgvPaymentDetails.DataError
         If e.Context = DataGridViewDataErrorContexts.Commit Then
